@@ -155,11 +155,11 @@ if __name__=='__main__':
     #存储容器
     lock = threading.Lock()
     #线程锁，针对插入，保存数据以及最后赋值kill时
-    for n in range(190):
+    for n in range(17):
     #利用for循环减少生成器每次生成的数据量,减小内存压力
         if kill==0:
             sys.exit()
-        i=[500000*n+i for i in range(50000)]
+        i=[500000*n+i for i in range(500000)]
         with futures.ThreadPoolExecutor(20) as t:
             t.map(run,i)
 
