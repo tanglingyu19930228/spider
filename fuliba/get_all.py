@@ -1,14 +1,17 @@
+#!/usr/bin/env python3
+#coding=utf-8
 import time
 import re
 import urllib.request
 import gc
-#gc shi fang nei cun
+
 def get_html(url):
     headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.221 Safari/537.36 SE 2.X MetaSr 1.0'}
     request=urllib.request.Request(url,headers=headers)
     response=urllib.request.urlopen(request)
     html=response.read()
     return html
+
 def downpage(html,num):
     html=get_html(html)
     reg_img='<img src=\"(http[\S]*\.((gif)|(jpg)))" />(</strong>)?</p>'
@@ -24,6 +27,9 @@ def downpage(html,num):
             strs='jpg'
         elif img_new.find('gif')!=-1:
             strs='gif'
+        else:
+            strs=None
+
         while True:
             try:
                 img_html=get_html(img_new)
@@ -36,6 +42,7 @@ def downpage(html,num):
                 time.sleep(3)
                 continue
             break
+
 def download_html(html,num):
     reg_html='<p class="post-thumb"> <a class="thumb" rel="external" href="(http://fuliba.net/[\S]*\.html)" target="_blank"'
     pattern1=re.compile(reg_html)
@@ -47,12 +54,15 @@ def download_html(html,num):
         downpage(html,num)
         num+=1
     return num
-num=1
-for i in range(1,11):
-    if i==1:
-        url='http://fuliba.net/'
-    else:
-        url='http://fuliba.net/'+'page/'+str(i)
-    html=get_html(url)
-    num=download_html(html,num)
-print('Done')
+
+
+if __name__=='__main__':
+    num=1
+    for i in range(1,20):
+        if i==1:
+            url='http://fuliba.net/'
+        else:
+            url='http://fuliba.net/'+'page/'+str(i)
+        html=get_html(url)
+        num=download_html(html,num)
+    print('Done')
