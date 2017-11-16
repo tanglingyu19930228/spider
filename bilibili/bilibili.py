@@ -1,4 +1,4 @@
-import requests,time,threading,csv,random,sys
+import requests,time,threading,csv,random,sys,gc
 from functools import namedtuple
 from concurrent import futures
 
@@ -156,12 +156,15 @@ if __name__=='__main__':
     lock = threading.Lock()
     #线程锁，针对插入，保存数据以及最后赋值kill时
     for n in range(17):
-    #利用for循环减少生成器每次生成的数据量,减小内存压力
+    #利用for循环减少生成器每次生成的数据量,减小内存压力,此时python调用的内存约为1g多一点
         if kill==0:
             sys.exit()
-        i=[500000*n+i for i in range(500000)]
+        i=[500000*n+i+1 for i in range(500000)]
         with futures.ThreadPoolExecutor(20) as t:
             t.map(run,i)
+        del i
+        gc.collect()
+
 
 
 
