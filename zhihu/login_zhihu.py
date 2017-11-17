@@ -23,7 +23,7 @@ class zhihu():
         })
         self.__cookie=self.loadcookie()
         if self.__cookie:
-            print('\n使用已有Cookie登录……')
+            print('\n使用已有Cookie登录>_<')
             self.session.cookies.update(self.__cookie)
         else :
             print('没找到Cookie文件，请使用login方法登录一遍！')
@@ -105,8 +105,7 @@ class zhihu():
 
 if __name__=='__main__':
     test=zhihu()
-    test.login('13006146654','1193543051')
+    test.login('账号','密码')
     params = {'type': 'content', 'q': '爱情'}
     response=test.session.get('https://www.zhihu.com/search',params=params,timeout=10)
-    #print(response.request.headers)
     print(response.text)
