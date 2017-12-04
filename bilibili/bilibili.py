@@ -1,4 +1,4 @@
-import requests,time,threading,csv,random,sys,gc
+import requests, time, threading, csv, random, sys, gc
 from functools import namedtuple
 from concurrent import futures
 
@@ -68,18 +68,18 @@ agents = [
     "Mozilla/5.0 (Linux; U; Android 1.6; en-us; SonyEricssonX10i Build/R1AA056) AppleWebKit/528.5  (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1",
 ]
 
-headers={
-    'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,imag',
-    'Accept-Encoding':'gzip, deflate',
-    'Accept-Language':'zh-CN,zh;q=0.9',
-    'Connection':'keep-alive',
-    'Host':'api.bilibili.com',
-    'Upgrade-Insecure-Requests':'1',
-    'User-Agent':random.choice(agents)
-    #随机获取User-Agent
+headers = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,imag',
+    'Accept-Encoding': 'gzip, deflate',
+    'Accept-Language': 'zh-CN,zh;q=0.9',
+    'Connection': 'keep-alive',
+    'Host': 'api.bilibili.com',
+    'Upgrade-Insecure-Requests': '1',
+    'User-Agent': random.choice(agents)
+    # 随机获取User-Agent
 }
 
-row=['aid','view','danmaku','reply','favorite','coin','share']
+row = ['aid', 'view', 'danmaku', 'reply', 'favorite', 'coin', 'share']
 '''
     aid：        视频编号
     view：       播放量
@@ -89,29 +89,29 @@ row=['aid','view','danmaku','reply','favorite','coin','share']
     coin：       硬币数
     share：      分享数
 '''
-video=namedtuple('video',row)
+video = namedtuple('video', row)
 
 
 def run(i):
     global lock
     global kill
-    if kill==0:
+    if kill == 0:
         sys.exit()
-    url="http://api.bilibili.com/archive_stat/stat?aid={}".format(i)
-    response=get_response(url,i)
-    if response and response['code']==0:
+    url = "http://api.bilibili.com/archive_stat/stat?aid={}".format(i)
+    response = get_response(url, i)
+    if response and response['code'] == 0:
         try:
-            data=response['data']
-            Video=video(data['aid'],
-                        data['view'],
-                        data['danmaku'],
-                        data['reply'],
-                        data['favorite'],
-                        data['coin'],
-                        data['share'])
+            data = response['data']
+            Video = video(data['aid'],
+                          data['view'],
+                          data['danmaku'],
+                          data['reply'],
+                          data['favorite'],
+                          data['coin'],
+                          data['share'])
             with lock:
                 result.append(Video)
-                print('try:',i)
+                print('try:', i)
 
         except:
             pass
@@ -123,48 +123,43 @@ def run(i):
                 save(savenumber)
                 time.sleep(10)
             else:
-                kill=0
-    #固定的点保存已下载记录，若result为空则说明已没有数据，此时将kill赋值为0，将使所有的子进程退出
+                kill = 0
+                # 固定的点保存已下载记录，若result为空则说明已没有数据，此时将kill赋值为0，将使所有的子进程退出
 
 
-def get_response(url,i):
+def get_response(url, i):
     try:
-        response=requests.get(url,headers=headers,timeout=5).json()
+        response = requests.get(url, headers=headers, timeout=5).json()
     except Exception as e:
-        print('请求异常Id：',i,'>>>',e)
-        response=None
+        print('请求异常Id：', i, '>>>', e)
+        response = None
     time.sleep(0.5 + random.random())
     return response
 
 
 def save(savenumber):
-
-    with open('data_%s.csv'%str(savenumber),'w',newline='',encoding='utf-8') as f:
-        #newline默认会在行之间插入空行
-        f_csv=csv.writer(f)
+    with open('data_%s.csv' % str(savenumber), 'w', newline='', encoding='utf-8') as f:
+        # newline默认会在行之间插入空行
+        f_csv = csv.writer(f)
         f_csv.writerow(row)
         f_csv.writerows(result)
     result.clear()
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
 
     kill = 1
-    #进程开关
+    # 进程开关
     result = []
-    #存储容器
+    # 存储容器
     lock = threading.Lock()
-    #线程锁，针对插入，保存数据以及最后赋值kill时
+    # 线程锁，针对插入，保存数据以及最后赋值kill时
     for n in range(17):
-    #利用for循环减少生成器每次生成的数据量,减小内存压力,此时python调用的内存约为1g多一点
-        if kill==0:
+        # 利用for循环减少生成器每次生成的数据量,减小内存压力,此时python调用的内存约为1g多一点
+        if kill == 0:
             sys.exit()
-        i=[500000*n+i+1 for i in range(500000)]
+        i = [500000 * n + i + 1 for i in range(500000)]
         with futures.ThreadPoolExecutor(20) as t:
-            t.map(run,i)
+            t.map(run, i)
         del i
         gc.collect()
-
-
-
-
