@@ -1,6 +1,6 @@
 ﻿# selenium-抓取天猫信息
 
-标签（空格分隔）： selenium python xpath
+selenium python xpath
 
 ---
 
@@ -17,7 +17,8 @@
 ----------------
 
 https://sites.google.com/a/chromium.org/chromedriver/downloads
-#####若网站访问不了或者延迟特别高，则你需要一个梯子
+
+若网站访问不了或者延迟特别高，则你需要一个梯子
 
 安装selenium：
 -----------
