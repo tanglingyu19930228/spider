@@ -24,7 +24,7 @@ elem1_tuijian = driver.find_element_by_xpath("//div[@class='m-portal']/div/div/a
 tuijian_herf = elem1_tuijian.get_attribute("href")
 driver.get(tuijian_herf)
 
-elem_allbaby = driver.find_element_by_xpath("//*[@id='shop17361190421']/div/div/div/div/div/div/div/div[15]/a")
+elem_allbaby = driver.find_element_by_xpath("//*[@id='shop17361190421']/div/div/div/div/div/div/div/div[@class='l__8_0447 sn-simple-logo jgabs']/a")
 allbaby_href = elem_allbaby.get_attribute("href")
 time.sleep(1)
 driver.get(allbaby_href)
@@ -44,7 +44,7 @@ def get_info():
     # 名称
     price = '//dd[@class="detail"]/div/div[1]/span[2]'
     # 价格
-    sale_area = '//dd[@class="detail"]/div/div[2]/span'
+    sale_area = '//dd[@class="detail"]/div/div[@class="sale-area"]/span'
     # 销量
     judge = '//dd[@class="rates"]/div/h4/a'
     # 评价
