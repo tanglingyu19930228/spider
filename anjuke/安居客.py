@@ -1,5 +1,6 @@
 # -*-coding:utf-8-*-
-import requests,csv
+import requests
+import csv
 from functools import namedtuple
 from bs4 import BeautifulSoup
 
@@ -7,7 +8,7 @@ from bs4 import BeautifulSoup
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) '
                   'Chrome/49.0.2623.221 Safari/537.36 SE 2.X MetaSr 1.0'}
-row=['a_title','em_title','house_type','size','layers','bilud_year','brokername','address','tags','price']
+row=['a_title','em_title','href','house_type','size','layers','bilud_year','brokername','address','tags','price']
 info=namedtuple('info',row)
 results=[]
 
@@ -17,6 +18,7 @@ def get_info(response):
     for list_item in list_items:
         house_title=list_item.find('div',{'class':'house-title'})
         a_title=house_title.a.get('title')
+        href = house_title.a.get('href')
         try:
             em_title=house_title.em.get('title')
         except AttributeError as e:
@@ -24,17 +26,20 @@ def get_info(response):
         details_item= list_item.find('div', {'class': 'details-item'})
         spans=details_item.find_all('span')
         house_type=spans[0].string
-        size=spans[1].string.replace('²','2')
+        size=spans[1].string
+        #.replace('²','2')
         layers=spans[2].string
         bilud_year=spans[3].string
         try:
             brokername=spans[4].text.replace('','')
         except IndexError as e:
             brokername='have no'
-        address=list_item.find('span', {'class': 'comm-address'}).get('title').replace(u'\xa0','')
+        address=list_item.find('span', {'class': 'comm-address'}).get('title')
+        #.replace(u'\xa0','')
         tags=list_item.find('div', {'class': 'tags-bottom'}).text.replace('\n','')
-        price=list_item.find('div', {'class': 'pro-price'}).text.replace('\n','').replace('²','2')
-        result=info(a_title,em_title,house_type,size,layers,bilud_year,brokername,address,tags,price)
+        price=list_item.find('div', {'class': 'pro-price'}).text.replace('\n','')
+        #.replace('²','2')
+        result=info(a_title,em_title,href,house_type,size,layers,bilud_year,brokername,address,tags,price)
         #print((a_title,em_title,house_type,size,layers,bilud_year,brokername,address,tags,price))
         results.append(result)
 
@@ -45,7 +50,7 @@ for i in range(1,51):
     get_info(response_text)
     print(i)
 
-with open('安居客.csv', 'w', newline='') as f:
+with open('安居客.csv', 'w', newline='',encoding='utf-8') as f:
     f_csv = csv.writer(f)
     f_csv.writerow(row)
     f_csv.writerows(results)

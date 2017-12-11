@@ -24,7 +24,7 @@ elem1_tuijian = driver.find_element_by_xpath("//div[@class='m-portal']/div/div/a
 tuijian_herf = elem1_tuijian.get_attribute("href")
 driver.get(tuijian_herf)
 
-elem_allbaby = driver.find_element_by_xpath("//*[@id='shop17361190421']/div/div/div/div/div/div/div/div[@class='l__8_0447 sn-simple-logo jgabs']/a")
+elem_allbaby = driver.find_element_by_xpath("//*[@id='shop17361190421']/div/div/div/div/div/div/div/div[@class='l__8_8790 sn-simple-logo jgabs']/a")
 allbaby_href = elem_allbaby.get_attribute("href")
 time.sleep(1)
 driver.get(allbaby_href)
